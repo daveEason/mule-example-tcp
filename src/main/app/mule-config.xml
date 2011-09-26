@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns="http://www.mulesoft.org/schema/mule/core"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns:tcp="http://www.mulesoft.org/schema/mule/tcp"
+    xsi:schemaLocation="
+        http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/3.2/mule.xsd
+        http://www.mulesoft.org/schema/mule/tcp http://www.mulesoft.org/schema/mule/tcp/3.2/mule-tcp.xsd">
+
+    <tcp:connector name="tcpConnector">
+		<tcp:length-protocol payloadOnly="true"/>
+    </tcp:connector>
+
+    <byte-array-to-object-transformer name="byteArrayToObject" />
+
+    <tcp:endpoint name="tcpendpoint" host="localhost" port="4444" connector-ref="tcpConnector" exchange-pattern="request-response" transformer-refs="byteArrayToObject" responseTransformer-refs="byteArrayToObject"/>
+
+    <flow name="Test">
+        <tcp:inbound-endpoint ref="tcpendpoint"/>
+        <component>
+            <singleton-object class="com.mule.example.tcp.Echo"/>
+        </component>
+    </flow>
+</mule>
